@@ -1,7 +1,8 @@
 using System.ComponentModel.DataAnnotations;
-namespace Haircut.Models;
 
-public class Service
+namespace Haircut.Models.DTOs;
+
+public class ServiceDTO
 {
     public int Id { get; set; }
     [Required]

@@ -2,6 +2,7 @@ using Haircut.Models;
 using Microsoft.EntityFrameworkCore;
 using System.Text.Json.Serialization;
 using Microsoft.AspNetCore.Http.Json;
+using Haircut.Models.DTOs;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -25,6 +26,154 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
+//ENDPOINTS=============================================================================================================================================================
+
+
+        //==========================================CUSTOMERS========================================
+    //GETS
+//All Customers
+app.MapGet("/customers", (HillaryHaircutDbContext db) => 
+{
+    var query = db.Customers;
+    
+    var result = query
+        .Select(c => new CustomerDTO
+        {
+            Id = c.Id,
+            Name = c.Name
+        }).ToList();
+
+    return Results.Ok(result);
+});
+        //==========================================STYLISTS=========================================
+    //GETS
+//All Stylists
+app.MapGet("/stylists", (HillaryHaircutDbContext db) => 
+{
+    var query = db.Stylists;
+    
+    var result = query
+        .Select(s => new StylistDTO
+        {
+            Id = s.Id,
+            Name = s.Name
+        }).ToList();
+
+    return Results.Ok(result);
+});
+        //==========================================SERVICES=========================================
+    //GETS
+//All Services
+app.MapGet("/services", (HillaryHaircutDbContext db) => 
+{
+    var query = db.Services;
+    
+    var result = query
+        .Select(s => new ServiceDTO
+        {
+            Id = s.Id,
+            ServiceName = s.ServiceName
+        }).ToList();
+
+    return Results.Ok(result);
+});
+        //========================================APPOINTMENTS=======================================
+    //GETS
+//All Appointments
+app.MapGet("/Appointments", (HillaryHaircutDbContext db) => 
+{
+    var query = db.Appointments
+        .Include(a => a.Stylist)
+        .Include(a => a.Customer)
+        .Include(a => a.AppointmentServices)
+        .ThenInclude(a => a.Service);
+    
+    var result = query
+        .Select(a => new AppointmentDTO
+        {
+            Id = a.Id,
+            StylistId = a.StylistId,
+            Stylist = new StylistDTO
+            {
+                Id = a.Stylist.Id,
+                Name = a.Stylist.Name
+            },
+            CustomerId = a.CustomerId,
+            Customer = new CustomerDTO
+            {
+                Id = a.Customer.Id,
+                Name = a.Customer.Name
+            },
+            AppointmentServices = a.AppointmentServices
+                .Select(s => new AppointmentServiceDTO
+                {
+                    Id = s.Id,
+                    ServiceId = s.ServiceId,
+                    Service = new ServiceDTO
+                    {
+                        Id = s.Service.Id,
+                        ServiceName = s.Service.ServiceName,
+                        Cost = s.Service.Cost
+                    },
+                    AppointmentId = s.AppointmentId
+                }).ToList(),
+            Time = a.Time
+        }).ToList();
+
+    return Results.Ok(result);
+});
+        //==========================================APPTSERV==========================================
+    //GETS
+//All AppointmentServices
+app.MapGet("/appointmentservices", (HillaryHaircutDbContext db) => 
+{
+    //=======Filters=======
+    var query = db.AppointmentServices
+        .Include(a => a.Service)
+        .Include(a => a.Appointment);
+
+    //=======Selection=======
+    var result = query
+        .Select(aps => new AppointmentServiceDTO
+        {
+            Id = aps.Id,
+            ServiceId = aps.ServiceId,
+            Service = new ServiceDTO
+            {
+                Id = aps.Service.Id,
+                ServiceName = aps.Service.ServiceName,
+                Cost = aps.Service.Cost
+            },
+            AppointmentId = aps.AppointmentId,
+            Appointment = new AppointmentDTO
+            {
+                Id = aps.Appointment.Id,
+                StylistId = aps.Appointment.StylistId,
+                Stylist = new StylistDTO
+                {
+                    Id = aps.Appointment.Stylist.Id,
+                    Name = aps.Appointment.Stylist.Name
+                },
+                CustomerId = aps.Appointment.CustomerId,
+                Customer = new CustomerDTO
+                {
+                    Id = aps.Appointment.Customer.Id,
+                    Name = aps.Appointment.Customer.Name
+                },
+                Time = aps.Appointment.Time
+            }
+        }).ToList();
+
+    //======RETURN=======
+    return Results.Ok(result);
+
+});
+
+
+//========================================RUN==================================
+
+
 
 app.UseHttpsRedirection();
 

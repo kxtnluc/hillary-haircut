@@ -1,15 +1,14 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace Haircut.Models;
+namespace Haircut.Models.DTOs;
 
-
-public class AppointmentService
+public class AppointmentServiceDTO
 {
     public int Id { get; set; }
     [Required]
     public int ServiceId { get; set; }
-    public Service Service { get; set; }
+    public ServiceDTO Service { get; set; }
     [Required]
     public int AppointmentId { get; set; }
-    public Appointment Appointment { get; set; }
+    public AppointmentDTO Appointment { get; set; }
 }

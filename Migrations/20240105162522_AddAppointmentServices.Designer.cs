@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -10,9 +11,10 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace HillaryHaircut.Migrations
 {
     [DbContext(typeof(HillaryHaircutDbContext))]
-    partial class HillaryHaircutDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240105162522_AddAppointmentServices")]
+    partial class AddAppointmentServices
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -80,8 +82,6 @@ namespace HillaryHaircut.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("AppointmentId");
-
-                    b.HasIndex("ServiceId");
 
                     b.ToTable("AppointmentServices");
 
@@ -252,21 +252,11 @@ namespace HillaryHaircut.Migrations
 
             modelBuilder.Entity("Haircut.Models.AppointmentService", b =>
                 {
-                    b.HasOne("Haircut.Models.Appointment", "Appointment")
+                    b.HasOne("Haircut.Models.Appointment", null)
                         .WithMany("AppointmentServices")
                         .HasForeignKey("AppointmentId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.HasOne("Haircut.Models.Service", "Service")
-                        .WithMany()
-                        .HasForeignKey("ServiceId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Appointment");
-
-                    b.Navigation("Service");
                 });
 
             modelBuilder.Entity("Haircut.Models.Appointment", b =>
