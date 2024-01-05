@@ -1,23 +1,32 @@
-import logo from './logo.svg';
+import {Navbar, NavbarBrand, Nav, NavItem, NavLink} from "reactstrap"
 import './App.css';
+import { Outlet } from 'react-router-dom';
+import "bootstrap/dist/css/bootstrap.css";
+
 
 function App() {
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <>
+        <Navbar color='light' expand='md'>
+          <Nav navbar>
+            <NavbarBrand href='/'>💇 Hillary's Haircuts</NavbarBrand>
+            <NavItem className='nav-it'>
+              <NavLink className='nav-li nav-appointment' href='/appointments'>Appointments</NavLink>
+            </NavItem>
+            <NavItem className='nav-it'>
+              <NavLink className='nav-li nav-customers' href='/customers'>Customers</NavLink>
+            </NavItem>
+            <NavItem className='nav-it'>
+              <NavLink className='nav-li nav-stylists' href='/stylists'>Stylists</NavLink>
+            </NavItem>
+            <NavItem className='nav-it'>
+              <NavLink className='nav-li nav-services' href='/services'>Services</NavLink>
+            </NavItem>
+          </Nav>
+        </Navbar>
+        <Outlet />
+      </>
     </div>
   );
 }
