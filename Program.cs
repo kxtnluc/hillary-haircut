@@ -27,12 +27,12 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-//ENDPOINTS=============================================================================================================================================================
+//ENDPOINTS=========================================================================================================================================================================================
 
 
-        //==========================================CUSTOMERS========================================
-    //GETS
-//All Customers
+                                                                                                        //==========================================CUSTOMERS========================================
+                                                                                                            //GETS
+                                                                                                                //All Customers
 app.MapGet("/customers", (HillaryHaircutDbContext db) => 
 {
     var query = db.Customers;
@@ -46,9 +46,24 @@ app.MapGet("/customers", (HillaryHaircutDbContext db) =>
 
     return Results.Ok(result);
 });
-        //==========================================STYLISTS=========================================
-    //GETS
-//All Stylists
+                                                                                                            //POSTS
+                                                                                                                //new Customer
+app.MapPost("/customers", (HillaryHaircutDbContext db, Customer customerToPost) => 
+{
+    try
+    {
+        db.Customers.Add(customerToPost);
+        db.SaveChanges();
+        return Results.Created($"/customers/{customerToPost.Id}", customerToPost);
+    }
+    catch (DbUpdateException)
+    {
+        return Results.BadRequest("Invalid Data Submitted");
+    }
+});
+                                                                                                        //==========================================STYLISTS=========================================
+                                                                                                            //GETS
+                                                                                                                //All Stylists
 app.MapGet("/stylists", (HillaryHaircutDbContext db) => 
 {
     var query = db.Stylists;
@@ -63,8 +78,8 @@ app.MapGet("/stylists", (HillaryHaircutDbContext db) =>
 
     return Results.Ok(result);
 });
-    //PUPTS
-//IsActive --to-> TRUE
+                                                                                                            //PUTS
+                                                                                                                //IsActive --to-> TRUE
 app.MapPut("/stylists/activate/{id}", (int id, HillaryHaircutDbContext db) => 
 {
     Stylist foundStylist = db.Stylists.SingleOrDefault(s => s.Id == id);
@@ -81,7 +96,7 @@ app.MapPut("/stylists/activate/{id}", (int id, HillaryHaircutDbContext db) =>
     return Results.NoContent();
 
 });
-//IsActive --to-> FALSE
+                                                                                                                //IsActive --to-> FALSE
 app.MapPut("/stylists/deactivate/{id}", (int id, HillaryHaircutDbContext db) => 
 {
     Stylist foundStylist = db.Stylists.SingleOrDefault(s => s.Id == id);
@@ -98,9 +113,24 @@ app.MapPut("/stylists/deactivate/{id}", (int id, HillaryHaircutDbContext db) =>
     return Results.NoContent();
 
 });
-        //==========================================SERVICES=========================================
-    //GETS
-//All Services
+                                                                                                            //POSTS
+                                                                                                                //new Stylist 
+app.MapPost("/stylists", (HillaryHaircutDbContext db, Stylist stylistToPost) => 
+{
+    try
+    {
+        db.Stylists.Add(stylistToPost);
+        db.SaveChanges();
+        return Results.Created($"/stylists/{stylistToPost.Id}", stylistToPost);
+    }
+    catch (DbUpdateException)
+    {
+        return Results.BadRequest("Invalid Data Submitted");
+    }
+});
+                                                                                                        //==========================================SERVICES=========================================
+                                                                                                            //GETS
+                                                                                                                //All Services
 app.MapGet("/services", (HillaryHaircutDbContext db) => 
 {
     var query = db.Services;
@@ -115,10 +145,10 @@ app.MapGet("/services", (HillaryHaircutDbContext db) =>
 
     return Results.Ok(result);
 });
-        //========================================APPOINTMENTS=======================================
-    //GETS
-//All Appointments
-app.MapGet("/Appointments", (HillaryHaircutDbContext db) => 
+                                                                                                        //========================================APPOINTMENTS=======================================
+                                                                                                            //GETS
+                                                                                                                //All Appointments
+app.MapGet("/appointments", (HillaryHaircutDbContext db) => 
 {
     var query = db.Appointments
         .Include(a => a.Stylist)
@@ -160,9 +190,24 @@ app.MapGet("/Appointments", (HillaryHaircutDbContext db) =>
 
     return Results.Ok(result);
 });
-        //==========================================APPTSERV==========================================
-    //GETS
-//All AppointmentServices
+                                                                                                            //POSTS
+                                                                                                                //new Appointment
+app.MapPost("appointments", (HillaryHaircutDbContext db, Appointment appointmentToPost) =>
+{
+     try
+    {
+        db.Appointments.Add(appointmentToPost);
+        db.SaveChanges();
+        return Results.Created($"/customers/{appointmentToPost.Id}", appointmentToPost);
+    }
+    catch (DbUpdateException)
+    {
+        return Results.BadRequest("Invalid Data Submitted");
+    }
+});
+                                                                                                        //==========================================APPTSERV==========================================
+                                                                                                            //GETS
+                                                                                                                //All AppointmentServices
 app.MapGet("/appointmentservices", (HillaryHaircutDbContext db) => 
 {
     //=======Filters=======
@@ -206,9 +251,23 @@ app.MapGet("/appointmentservices", (HillaryHaircutDbContext db) =>
     return Results.Ok(result);
 
 });
+                                                                                                            //POSTS
+                                                                                                                //new appointment service
+app.MapPost("appointmentservices", (HillaryHaircutDbContext db, AppointmentService apptservToPost) =>
+{
+     try
+    {
+        db.AppointmentServices.Add(apptservToPost);
+        db.SaveChanges();
+        return Results.Created($"/appointmentservices/{apptservToPost.Id}", apptservToPost);
+    }
+    catch (DbUpdateException)
+    {
+        return Results.BadRequest("Invalid Data Submitted");
+    }
+});
 
-
-//========================================RUN==================================
+//RUN===============================================================================================================================================================================================
 
 
 

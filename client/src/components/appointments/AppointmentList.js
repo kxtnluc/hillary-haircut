@@ -22,7 +22,7 @@ export const AppointmentList = () =>
                                 <CardBody style={{textAlign: "left"}}>
 
                                     <CardTitle className="text-left" tag="h2">
-                                        {a.timeInDateOnly}
+                                        {a.timeInDateOnly.startsWith("0") ? a.timeInDateOnly.slice(1) : a.timeInDateOnly}
                                     </CardTitle>
 
                                     <CardSubtitle className="mb-2 text-muted ml-5" tag="h4">
