@@ -57,10 +57,46 @@ app.MapGet("/stylists", (HillaryHaircutDbContext db) =>
         .Select(s => new StylistDTO
         {
             Id = s.Id,
-            Name = s.Name
+            Name = s.Name,
+            IsActive = s.IsActive
         }).ToList();
 
     return Results.Ok(result);
+});
+    //PUPTS
+//IsActive --to-> TRUE
+app.MapPut("/stylists/activate/{id}", (int id, HillaryHaircutDbContext db) => 
+{
+    Stylist foundStylist = db.Stylists.SingleOrDefault(s => s.Id == id);
+
+    if (foundStylist == null)
+    {
+        return Results.NotFound();
+    }
+
+    foundStylist.IsActive = true;
+
+    db.SaveChanges();
+
+    return Results.NoContent();
+
+});
+//IsActive --to-> FALSE
+app.MapPut("/stylists/deactivate/{id}", (int id, HillaryHaircutDbContext db) => 
+{
+    Stylist foundStylist = db.Stylists.SingleOrDefault(s => s.Id == id);
+
+    if (foundStylist == null)
+    {
+        return Results.NotFound();
+    }
+
+    foundStylist.IsActive = false;
+
+    db.SaveChanges();
+
+    return Results.NoContent();
+
 });
         //==========================================SERVICES=========================================
     //GETS
@@ -73,7 +109,8 @@ app.MapGet("/services", (HillaryHaircutDbContext db) =>
         .Select(s => new ServiceDTO
         {
             Id = s.Id,
-            ServiceName = s.ServiceName
+            ServiceName = s.ServiceName,
+            Cost = s.Cost
         }).ToList();
 
     return Results.Ok(result);
