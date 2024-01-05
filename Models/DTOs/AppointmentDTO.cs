@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using System.Globalization;
 using Haircut.Models;
 
 namespace Haircut.Models.DTOs;
@@ -19,20 +20,27 @@ public class AppointmentDTO
     public string TimeInDateOnly {
         get
         {
-            return Time.ToString("MM-dd");
+            return Time.ToString("MM/dd");
         }
     }
     public string TimeInHourOnly {
         get
         {
-            return Time.ToString("HH:mm");
+            return Time.ToString("h:mm tt", CultureInfo.InvariantCulture);
         }
     }
 
     public decimal TotalCost {
         get
         {
-            decimal total = AppointmentServices.Sum(aps => aps.Service.Cost);
+
+            decimal total = 0;
+
+            if(AppointmentServices != null)
+            {
+                total = AppointmentServices.Sum(aps => aps.Service.Cost);
+            }
+
             return total;
         }
     }
