@@ -7,3 +7,10 @@ export const postAppointmentService = (apptServ) => {
         body: JSON.stringify(apptServ),
     }).then((r) => r.json())
 }
+
+export const deleteAppointmentService = (apptServId) => {
+    return fetch(`${_apiUrl}/${apptServId}`, {
+        method: "DELETE",
+        headers: {"Content-Type": "application/json"}
+    })
+}
