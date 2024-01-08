@@ -66,7 +66,8 @@ app.MapPost("/customers", (HillaryHaircutDbContext db, Customer customerToPost) 
                                                                                                                 //All Stylists
 app.MapGet("/stylists", (HillaryHaircutDbContext db) => 
 {
-    var query = db.Stylists;
+    var query = db.Stylists
+        .OrderBy(q=> q.Id);
     
     var result = query
         .Select(s => new StylistDTO
