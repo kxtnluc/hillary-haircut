@@ -280,7 +280,20 @@ app.MapPost("appointmentservices", (HillaryHaircutDbContext db, AppointmentServi
         return Results.BadRequest("Invalid Data Submitted");
     }
 });
+                                                                                                            //DELETES
+                                                                                                                //remove an appointment service
+app.MapDelete("/appointmentServices/{id}", (int id, HillaryHaircutDbContext db) =>
+{
+    AppointmentService apptServ = db.AppointmentServices.SingleOrDefault(a => a.Id == id);
 
+    if(apptServ == null)
+    {
+        return Results.NotFound();
+    }
+    db.AppointmentServices.Remove(apptServ);
+    db.SaveChanges();
+    return Results.NoContent();
+});
 //RUN===============================================================================================================================================================================================
 
 
