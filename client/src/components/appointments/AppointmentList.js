@@ -1,16 +1,33 @@
 import { useEffect, useState } from "react"
-import { getAppointments } from "../../data/appointmentData";
-import { Button, Card, CardBody, CardFooter, CardGroup, CardHeader, CardSubtitle, CardText, CardTitle, ListGroup, ListGroupItem } from "reactstrap";
+import { deleteAppointment, getAppointments } from "../../data/appointmentData";
+import { Button, Card, CardBody, CardFooter, CardGroup, CardHeader, CardSubtitle, CardText, CardTitle, ListGroup, ListGroupItem, Modal, ModalBody, ModalFooter, ModalHeader } from "reactstrap";
 import { Link } from "react-router-dom";
 
 export const AppointmentList = () =>
 {
 
     const [appointments, setAppointments] = useState([]);
+    const [modal, setModal] = useState(false);
+    const [selectedAppt, setSelectedAppt] = useState({});
+
+    const toggle = (a) => 
+    {
+        setModal(!modal)
+        setSelectedAppt(a)
+
+    }
 
     useEffect(() => {
         getAppointments().then(setAppointments)
-    }, [])
+    }, [modal])
+
+    const handleDelete = () => {
+        console.log("canceling appointment...")
+
+        deleteAppointment(selectedAppt.id)
+
+        toggle();
+    }
 
     return (
         <main>
@@ -26,7 +43,8 @@ export const AppointmentList = () =>
                         <Card>
                             <CardBody style={{ textAlign: 'left' }}>
                                 <CardTitle className="text-left" tag="h2">
-                                    {a.timeInDateOnly.startsWith('0') ? a.timeInDateOnly.slice(1) : a.timeInDateOnly}
+                                    {a.timeInDateOnly.startsWith('0') ? a.timeInDateOnly.slice(1) : a.timeInDateOnly} 
+                                    <span style={{ fontSize: "1.25rem", fontStyle: "italic" }}> ~ {a.stylist.name}</span>
                                 </CardTitle>
 
                                 <CardSubtitle className="mb-2 text-muted ml-5" tag="h4">
@@ -41,7 +59,24 @@ export const AppointmentList = () =>
                                     ))}
                                 </ListGroup>
 
-                                <CardFooter className="mb-2 text-success">${a.totalCost}</CardFooter>
+                                <CardFooter className="mb-2 text-success">
+                                    ${a.totalCost}
+                                   <Button onClick={() => toggle(a)} outline size="sm" style={{ float: "right"}} color="danger">Cancel</Button>
+                                    <Modal isOpen={modal} toggle={toggle} {...a}>
+                                        <ModalHeader toggle={toggle}>Cancel Appointment?</ModalHeader>
+                                        <ModalBody>
+                                            By selecting Cancel, this appointment and all its data will be deleted and cannot be retreived.
+                                        </ModalBody>
+                                        <ModalFooter>
+                                            <Button  size="sm" color="secondary" onClick={toggle}>
+                                                Back
+                                            </Button>{' '}
+                                            <Button size="sm" color="danger" onClick={handleDelete}>
+                                                Delete
+                                            </Button>
+                                    </ModalFooter>
+                                </Modal>
+                                </CardFooter>
                             </CardBody>
                         </Card>
                         </div>
